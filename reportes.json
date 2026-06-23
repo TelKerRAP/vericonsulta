@@ -1,0 +1,21 @@
+[
+  {
+    "numero": "5512345678",
+    "riesgo": "alto",
+    "categoria": "Fraude Bancario",
+    "reportes": 12,
+    "comentarios": [
+      "Se hizo pasar por BBVA",
+      "Solicitó código SMS"
+    ]
+  },
+  {
+    "numero": "3331234567",
+    "riesgo": "medio",
+    "categoria": "WhatsApp Falso",
+    "reportes": 5,
+    "comentarios": [
+      "Intentó obtener código de verificación"
+    ]
+  }
+]
