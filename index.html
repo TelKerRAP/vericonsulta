@@ -119,6 +119,10 @@ footer{
     border-radius:10px;
     margin-bottom:20px;
 }
+
+ul{
+    padding-left:20px;
+}
 </style>
 </head>
 <body>
@@ -137,7 +141,11 @@ footer{
     <div class="card">
         <h2>🔍 Buscar Número</h2>
 
-        <input type="text" id="buscarNumero" placeholder="Ejemplo: 5512345678">
+        <input
+            type="text"
+            id="buscarNumero"
+            placeholder="Ejemplo: 5512345678"
+        >
 
         <button onclick="buscarNumero()">
             Buscar
@@ -149,7 +157,11 @@ footer{
     <div class="card">
         <h2>📝 Reportar Número</h2>
 
-        <input type="text" id="numero" placeholder="Número telefónico">
+        <input
+            type="text"
+            id="numero"
+            placeholder="Número telefónico"
+        >
 
         <select id="categoria">
             <option>Fraude Bancario</option>
@@ -160,7 +172,10 @@ footer{
             <option>Otro</option>
         </select>
 
-        <textarea id="comentario" placeholder="Describe tu experiencia"></textarea>
+        <textarea
+            id="comentario"
+            placeholder="Describe tu experiencia"
+        ></textarea>
 
         <button onclick="guardarReporte()">
             Enviar Reporte
@@ -178,188 +193,44 @@ footer{
     © 2026 Verifica Número MX
 </footer>
 
-<script type="module">
+<script>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-addDoc,
-query,
-orderBy,
-limit,
-getDocs,
-serverTimestamp,
-where
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+let baseDatos = [];
 
 /* ==========================
-   REEMPLAZAR CON TUS DATOS
+   CARGAR JSON
 ========================== */
 
-const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_PROYECTO.firebaseapp.com",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_PROYECTO.appspot.com",
-  messagingSenderId: "123456",
-  appId: "APP_ID"
-};
+fetch('reportes.json')
+.then(response => response.json())
+.then(data => {
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    baseDatos = data;
 
-/* ==========================
-   GUARDAR REPORTE
-========================== */
+    console.log("JSON cargado");
 
-window.guardarReporte = async () => {
+    cargarUltimos();
 
-const numero = document.getElementById("numero").value.trim();
-const categoria = document.getElementById("categoria").value;
-const comentario = document.getElementById("comentario").value.trim();
+})
+.catch(error => {
 
-if(!numero || !comentario){
-    alert("Completa todos los campos");
-    return;
-}
-
-try{
-
-await addDoc(collection(db,"reportes"),{
-    numero,
-    categoria,
-    comentario,
-    fecha: serverTimestamp()
-});
-
-alert("Reporte enviado");
-
-document.getElementById("numero").value="";
-document.getElementById("comentario").value="";
-
-cargarUltimos();
-
-}catch(error){
     console.error(error);
-    alert("Error al guardar");
-}
 
-};
+});
 
 /* ==========================
    BUSCAR NUMERO
 ========================== */
 
-window.buscarNumero = async () => {
-
-const numero = document.getElementById("buscarNumero").value.trim();
-
-const resultado = document.getElementById("resultadoBusqueda");
-
-resultado.innerHTML="Buscando...";
-
-const q = query(
-collection(db,"reportes"),
-where("numero","==",numero)
-);
-
-const snap = await getDocs(q);
-
-if(snap.empty){
-    resultado.innerHTML=`
-        <p>✅ No existen reportes para este número.</p>
-    `;
-    return;
-}
-
-let html=`
-<h3>⚠️ Número reportado</h3>
-<p>Total de reportes: ${snap.size}</p>
-<hr><br>
-`;
-
-snap.forEach(doc=>{
-
-const data = doc.data();
-
-html += `
-<div class="report-item">
-<strong>${data.categoria}</strong><br>
-${data.comentario}
-</div>
-`;
-
-});
-
-resultado.innerHTML=html;
-
-};
-
-/* ==========================
-   ULTIMOS REPORTES
-========================== */
-
-async function cargarUltimos(){
-
-const contenedor = document.getElementById("ultimosReportes");
-
-contenedor.innerHTML="Cargando...";
-
-const q = query(
-collection(db,"reportes"),
-orderBy("fecha","desc"),
-limit(10)
-);
-
-const snap = await getDocs(q);
-
-let html="";
-
-snap.forEach(doc=>{
-
-const data = doc.data();
-
-html += `
-<div class="report-item">
-<h3>📞 ${data.numero}</h3>
-<p><strong>${data.categoria}</strong></p>
-<p>${data.comentario}</p>
-</div>
-`;
-
-});
-
-contenedor.innerHTML=html;
-
-}
-
-cargarUltimos();
-
-</script>
-
-<script>
-
-let baseDatos = [];
-
-// Cargar JSON al abrir la página
-fetch('reportes.json')
-    .then(response => response.json())
-    .then(data => {
-        baseDatos = data;
-        console.log("JSON cargado:", baseDatos);
-    });
-
 function buscarNumero(){
 
     const numeroBuscado =
-        document.getElementById("numeroBuscar")
+        document.getElementById("buscarNumero")
         .value
         .trim();
 
     const resultado =
-        document.getElementById("resultado");
+        document.getElementById("resultadoBusqueda");
 
     const encontrado =
         baseDatos.find(item =>
@@ -368,21 +239,104 @@ function buscarNumero(){
 
     if(encontrado){
 
+        let comentarios = "";
+
+        if(encontrado.comentarios){
+
+            encontrado.comentarios.forEach(c => {
+
+                comentarios += `<li>${c}</li>`;
+
+            });
+
+        }
+
         resultado.innerHTML = `
             <h3>⚠️ Número Reportado</h3>
-            <p><b>Número:</b> ${encontrado.numero}</p>
-            <p><b>Categoría:</b> ${encontrado.categoria}</p>
-            <p><b>Riesgo:</b> ${encontrado.riesgo}</p>
-            <p><b>Reportes:</b> ${encontrado.reportes}</p>
+
+            <p><strong>Número:</strong>
+            ${encontrado.numero}</p>
+
+            <p><strong>Categoría:</strong>
+            ${encontrado.categoria}</p>
+
+            <p><strong>Riesgo:</strong>
+            ${encontrado.riesgo}</p>
+
+            <p><strong>Reportes:</strong>
+            ${encontrado.reportes}</p>
+
+            <br>
+
+            <strong>Comentarios:</strong>
+
+            <ul>
+                ${comentarios}
+            </ul>
         `;
 
-    } else {
+    }else{
 
         resultado.innerHTML = `
             <h3>✅ Sin reportes encontrados</h3>
+            <p>No existen registros para este número.</p>
         `;
 
     }
+
+}
+
+/* ==========================
+   ULTIMOS REPORTES
+========================== */
+
+function cargarUltimos(){
+
+    const contenedor =
+        document.getElementById("ultimosReportes");
+
+    let html = "";
+
+    baseDatos.slice(0,10).forEach(item => {
+
+        html += `
+        <div class="report-item">
+
+            <h3>📞 ${item.numero}</h3>
+
+            <p>
+                <strong>${item.categoria}</strong>
+            </p>
+
+            <p>
+                Reportes:
+                ${item.reportes}
+            </p>
+
+            <p>
+                Riesgo:
+                ${item.riesgo}
+            </p>
+
+        </div>
+        `;
+
+    });
+
+    contenedor.innerHTML = html;
+
+}
+
+/* ==========================
+   REPORTAR
+========================== */
+
+function guardarReporte(){
+
+    alert(
+        "Conecta este botón a Google Forms o Google Sheets."
+    );
+
 }
 
 </script>
