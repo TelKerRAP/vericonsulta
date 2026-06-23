@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifica Número MX</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:#fff;
+    min-height:100vh;
+}
+
+header{
+    text-align:center;
+    padding:40px 20px;
+    background:#111827;
+    border-bottom:1px solid #334155;
+}
+
+header h1{
+    font-size:2.5rem;
+    color:#38bdf8;
+}
+
+header p{
+    margin-top:10px;
+    color:#94a3b8;
+}
+
+.container{
+    width:95%;
+    max-width:1200px;
+    margin:auto;
+    padding:30px 0;
+}
+
+.card{
+    background:#1e293b;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:25px;
+}
+
+h2{
+    margin-bottom:15px;
+    color:#38bdf8;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin-bottom:10px;
+    background:#334155;
+    color:white;
+}
+
+textarea{
+    resize:none;
+    height:100px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#0ea5e9;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0284c7;
+}
+
+.resultado{
+    margin-top:15px;
+    padding:15px;
+    border-radius:10px;
+    background:#0f172a;
+}
+
+.report-item{
+    background:#334155;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.report-item h3{
+    color:#38bdf8;
+    margin-bottom:5px;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    color:#94a3b8;
+    font-size:14px;
+}
+
+.aviso{
+    background:#7f1d1d;
+    color:white;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <h1>📞 Verifica Número MX</h1>
+    <p>Consulta reportes ciudadanos sobre números telefónicos</p>
+</header>
+
+<div class="container">
+
+    <div class="aviso">
+        Este sitio recopila reportes enviados por usuarios. La información mostrada representa experiencias reportadas y no constituye una acusación formal.
+    </div>
+
+    <div class="card">
+        <h2>🔍 Buscar Número</h2>
+
+        <input type="text" id="buscarNumero" placeholder="Ejemplo: 5512345678">
+
+        <button onclick="buscarNumero()">
+            Buscar
+        </button>
+
+        <div id="resultadoBusqueda" class="resultado"></div>
+    </div>
+
+    <div class="card">
+        <h2>📝 Reportar Número</h2>
+
+        <input type="text" id="numero" placeholder="Número telefónico">
+
+        <select id="categoria">
+            <option>Fraude Bancario</option>
+            <option>Extorsión</option>
+            <option>WhatsApp Falso</option>
+            <option>Cobranza Falsa</option>
+            <option>Suplantación</option>
+            <option>Otro</option>
+        </select>
+
+        <textarea id="comentario" placeholder="Describe tu experiencia"></textarea>
+
+        <button onclick="guardarReporte()">
+            Enviar Reporte
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>🚨 Últimos Reportes</h2>
+        <div id="ultimosReportes"></div>
+    </div>
+
+</div>
+
+<footer>
+    © 2026 Verifica Número MX
+</footer>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+query,
+orderBy,
+limit,
+getDocs,
+serverTimestamp,
+where
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+/* ==========================
+   REEMPLAZAR CON TUS DATOS
+========================== */
+
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_PROYECTO.firebaseapp.com",
+  projectId: "TU_PROJECT_ID",
+  storageBucket: "TU_PROYECTO.appspot.com",
+  messagingSenderId: "123456",
+  appId: "APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* ==========================
+   GUARDAR REPORTE
+========================== */
+
+window.guardarReporte = async () => {
+
+const numero = document.getElementById("numero").value.trim();
+const categoria = document.getElementById("categoria").value;
+const comentario = document.getElementById("comentario").value.trim();
+
+if(!numero || !comentario){
+    alert("Completa todos los campos");
+    return;
+}
+
+try{
+
+await addDoc(collection(db,"reportes"),{
+    numero,
+    categoria,
+    comentario,
+    fecha: serverTimestamp()
+});
+
+alert("Reporte enviado");
+
+document.getElementById("numero").value="";
+document.getElementById("comentario").value="";
+
+cargarUltimos();
+
+}catch(error){
+    console.error(error);
+    alert("Error al guardar");
+}
+
+};
+
+/* ==========================
+   BUSCAR NUMERO
+========================== */
+
+window.buscarNumero = async () => {
+
+const numero = document.getElementById("buscarNumero").value.trim();
+
+const resultado = document.getElementById("resultadoBusqueda");
+
+resultado.innerHTML="Buscando...";
+
+const q = query(
+collection(db,"reportes"),
+where("numero","==",numero)
+);
+
+const snap = await getDocs(q);
+
+if(snap.empty){
+    resultado.innerHTML=`
+        <p>✅ No existen reportes para este número.</p>
+    `;
+    return;
+}
+
+let html=`
+<h3>⚠️ Número reportado</h3>
+<p>Total de reportes: ${snap.size}</p>
+<hr><br>
+`;
+
+snap.forEach(doc=>{
+
+const data = doc.data();
+
+html += `
+<div class="report-item">
+<strong>${data.categoria}</strong><br>
+${data.comentario}
+</div>
+`;
+
+});
+
+resultado.innerHTML=html;
+
+};
+
+/* ==========================
+   ULTIMOS REPORTES
+========================== */
+
+async function cargarUltimos(){
+
+const contenedor = document.getElementById("ultimosReportes");
+
+contenedor.innerHTML="Cargando...";
+
+const q = query(
+collection(db,"reportes"),
+orderBy("fecha","desc"),
+limit(10)
+);
+
+const snap = await getDocs(q);
+
+let html="";
+
+snap.forEach(doc=>{
+
+const data = doc.data();
+
+html += `
+<div class="report-item">
+<h3>📞 ${data.numero}</h3>
+<p><strong>${data.categoria}</strong></p>
+<p>${data.comentario}</p>
+</div>
+`;
+
+});
+
+contenedor.innerHTML=html;
+
+}
+
+cargarUltimos();
+
+</script>
+
+</body>
+</html>
