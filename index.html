@@ -339,5 +339,53 @@ cargarUltimos();
 
 </script>
 
+<script>
+
+let baseDatos = [];
+
+// Cargar JSON al abrir la página
+fetch('reportes.json')
+    .then(response => response.json())
+    .then(data => {
+        baseDatos = data;
+        console.log("JSON cargado:", baseDatos);
+    });
+
+function buscarNumero(){
+
+    const numeroBuscado =
+        document.getElementById("numeroBuscar")
+        .value
+        .trim();
+
+    const resultado =
+        document.getElementById("resultado");
+
+    const encontrado =
+        baseDatos.find(item =>
+            item.numero === numeroBuscado
+        );
+
+    if(encontrado){
+
+        resultado.innerHTML = `
+            <h3>⚠️ Número Reportado</h3>
+            <p><b>Número:</b> ${encontrado.numero}</p>
+            <p><b>Categoría:</b> ${encontrado.categoria}</p>
+            <p><b>Riesgo:</b> ${encontrado.riesgo}</p>
+            <p><b>Reportes:</b> ${encontrado.reportes}</p>
+        `;
+
+    } else {
+
+        resultado.innerHTML = `
+            <h3>✅ Sin reportes encontrados</h3>
+        `;
+
+    }
+}
+
+</script>
+
 </body>
 </html>
