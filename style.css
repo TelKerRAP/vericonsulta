@@ -1,0 +1,303 @@
+/*=========================
+        NAVBAR PREMIUM
+==========================*/
+
+.navbar{
+
+    width:95%;
+    max-width:1400px;
+
+    margin:25px auto;
+
+    padding:15px 35px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:rgba(17,24,39,.75);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(56,189,248,.18);
+
+    border-radius:18px;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,.45),
+        inset 0 0 20px rgba(56,189,248,.05);
+
+    position:sticky;
+
+    top:20px;
+
+    z-index:999;
+
+}
+
+.logo{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    color:#38bdf8;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.logo span{
+
+    color:white;
+
+}
+
+.logo small{
+
+    color:#38bdf8;
+
+    font-size:14px;
+
+    margin-left:5px;
+
+}
+
+.nav-links{
+
+    display:flex;
+
+    list-style:none;
+
+    gap:12px;
+
+}
+
+.nav-links li a{
+
+    color:#cbd5e1;
+
+    text-decoration:none;
+
+    padding:12px 18px;
+
+    border-radius:10px;
+
+    transition:.30s;
+
+    font-weight:600;
+
+}
+
+.nav-links li a:hover{
+
+    background:#0ea5e9;
+
+    color:white;
+
+    box-shadow:0 0 20px rgba(14,165,233,.35);
+
+}
+
+.nav-button{
+
+    background:linear-gradient(135deg,#06b6d4,#2563eb);
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:13px 24px;
+
+    border-radius:12px;
+
+    font-weight:bold;
+
+    transition:.3s;
+
+    box-shadow:0 0 25px rgba(37,99,235,.35);
+
+}
+
+.nav-button:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 0 35px rgba(14,165,233,.55);
+
+}
+
+@media(max-width:1100px){
+
+    .navbar{
+
+        flex-direction:column;
+
+        gap:20px;
+
+        padding:25px;
+
+    }
+
+    .nav-links{
+
+        flex-wrap:wrap;
+
+        justify-content:center;
+
+    }
+
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:#fff;
+    min-height:100vh;
+}
+
+header{
+    text-align:center;
+    padding:40px 20px;
+    background:#111827;
+    border-bottom:1px solid #334155;
+}
+
+header h1{
+    font-size:2.5rem;
+    color:#38bdf8;
+}
+
+header p{
+    margin-top:10px;
+    color:#94a3b8;
+}
+
+.container{
+    width:95%;
+    max-width:1200px;
+    margin:auto;
+    padding:30px 0;
+}
+
+.card{
+    background:#1e293b;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:25px;
+}
+
+h2{
+    margin-bottom:15px;
+    color:#38bdf8;
+}
+
+input, select, textarea{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin-bottom:10px;
+    background:#334155;
+    color:white;
+}
+
+textarea{
+    resize:none;
+    height:100px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#0ea5e9;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0284c7;
+}
+
+.resultado{
+    margin-top:15px;
+    padding:15px;
+    border-radius:10px;
+    background:#0f172a;
+}
+
+.report-item{
+    background:#334155;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.report-item h3{
+    color:#38bdf8;
+    margin-bottom:5px;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    color:#94a3b8;
+    font-size:14px;
+}
+
+.aviso{
+    background:#7f1d1d;
+    color:white;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+ul{
+    padding-left:20px;
+}
+
+.banner-mantenimiento{
+    background:linear-gradient(135deg,#b91c1c,#ef4444);
+    border:1px solid #f87171;
+    color:#fff;
+    padding:18px 20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 8px 25px rgba(239,68,68,.25);
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.banner-mantenimiento .icono{
+    font-size:34px;
+}
+
+.banner-mantenimiento h3{
+    margin:0;
+    font-size:20px;
+    margin-bottom:5px;
+}
+
+.banner-mantenimiento p{
+    margin:0;
+    color:#ffe4e6;
+    line-height:1.5;
+}
