@@ -272,33 +272,3 @@ footer{
 ul{
     padding-left:20px;
 }
-
-.banner-mantenimiento{
-    max-width:700px;
-    margin:0 auto 20px;
-    padding:12px 18px;
-    background:#991b1b;
-    border-left:5px solid #facc15;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    box-shadow:0 5px 15px rgba(0,0,0,.25);
-}
-
-.banner-mantenimiento .icono{
-    font-size:24px;
-}
-
-.banner-mantenimiento h3{
-    margin:0;
-    font-size:16px;
-    font-weight:700;
-}
-
-.banner-mantenimiento p{
-    margin:3px 0 0;
-    font-size:13px;
-    color:#fecaca;
-    line-height:1.35;
-}
